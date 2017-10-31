@@ -21,93 +21,157 @@
     .bld {
         font-weight: bold;
     }
+
+    .center {
+      margin: auto;
+  }
+
+  svg {
+      display: block;
+      margin: 0 auto;
+  }
 </style>
 <body>
-	<div id="vis"></div>
-	<div>
-		<p>
-			<label>Spiral:</label>
-			<label for="archimedean">
-				<input type="radio" name="spiral" id="archimedean" value="archimedean" checked="checked">
-				"Archimedean"
-			</label>
-			<label for="rectangular">
-				<input type="radio" name="spiral" id="rectangular" value="rectangular">
-				"Rectangular"
-			</label>
-		</p>
-	</div>
+  <div id="vis" class="center"></div>
+  <input id="nwords" type="text" name="new_words">
+  <input id="b_add" type="button" value="Add words">
+  <br>
+  <div>
+    <p>
+      <label>Spiral:</label>
+      <label for="archimedean">
+        <input type="radio" name="spiral" id="archimedean" value="archimedean" checked="checked">
+        "Archimedean"
+      </label>
+      <label for="rectangular">
+        <input type="radio" name="spiral" id="rectangular" value="rectangular">
+        "Rectangular"
+      </label>
+    </p>
+  </div>
 </body>
 <script>
-	var dataset = [
-      	"Hello", "world", "normally", "you", "want", "more", "words",
-      	"than", "this", "test", "tequilla", "vindictive", "hopes",
-      	"emotions", "expressions", "affective", "computing", "appraisal"].map(function(d) {
-      	return {text: d, size: 12 + Math.random() * 90, test: "haha"};
+
+  function wordCloud(selector) {
+
+      var fill = d3.scale.category20();
+
+      //Construct the word cloud's SVG element
+      var svg = d3.select(selector).append("svg")
+          .attr("width", 1000)
+          .attr("height", 600)
+          .append("g")
+          .attr("transform", "translate(500,300)");
+
+
+      //Draw the word cloud
+      function draw(words) {
+          var cloud = svg.selectAll("g text")
+                          .data(words, function(d) { return d.text; })
+
+          //Entering words
+          cloud.enter()
+              .append("text")
+              .style("font-family", "Impact")
+              .style("fill", function(d, i) { return fill(i); })
+              .attr("text-anchor", "middle")
+              .attr('font-size', 1)
+              .text(function(d) { return d.text; });
+
+          //Entering and existing words
+          cloud
+              .transition()
+                  .duration(600)
+                  .style("font-size", function(d) { return d.size + "px"; })
+                  .attr("transform", function(d) {
+                      return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+                  })
+                  .style("fill-opacity", 1);
+
+          //Exiting words
+          cloud.exit()
+              .transition()
+                  .duration(200)
+                  .style('fill-opacity', 1e-6)
+                  .attr('font-size', 1)
+                  .remove();
+      }
+
+
+      //Use the module pattern to encapsulate the visualisation code. We'll
+      // expose only the parts that need to be public.
+      return {
+
+          //Recompute the word cloud for a new set of words. This method will
+          // asycnhronously call draw when the layout has been computed.
+          //The outside world will need to call this function, so make it part
+          // of the wordCloud return value.
+          update: function(words, spiral) {
+              d3.layout.cloud().size([1000, 600])
+                  .words(words)
+                  .padding(10)
+                  //.rotate(function() { return ~~(Math.random() * 2) * 90; })
+                  .font("Impact")
+                  .fontSize(function(d) { return d.size; })
+                  .spiral(spiral)
+                  .on("end", draw)
+                  .start();
+          }
+      }
+
+  }
+
+  var dataset = [
+        "Hello", "world", "normally", "you", "want", "more", "words",
+        "than", "this", "test", "tequilla", "vindictive", "hopes",
+        "emotions", "expressions", "affective", "computing", "appraisal"].map(function(d) {
+        return {text: d, size: 10 + Math.random() * 90};
     });
 
-	var fill = d3.scale.category20();
+     var spiral = "archimedean";
 
-	var layout = d3.layout.cloud()
-    	.size([800, 500])
-    	.words(dataset)
-    	.padding(0)
-    	//.rotate(function() { return ~~(Math.random() * 2) * 45; })
-    	.font("Impact")
-    	.fontSize(function(d) { return d.size; })
-    	.spiral("archimedean")
-    	.on("end", first_draw);
+  //Prepare one of the sample sentences by removing punctuation,
+  // creating an array of words and computing a random size attribute.
+  function getWords(i) {
+      return words[i]
+              .replace(/[!\.,:;\?]/g, '')
+              .split(' ')
+              .map(function(d) {
+                  return {text: d, size: 10 + Math.random() * 60};
+              })
+  }
 
-    var svg = d3.select("#vis").append("svg")
-				.attr("id","cloud")
-      			.attr("width", layout.size()[0])
-      			.attr("height", layout.size()[1]);
+  //This method tells the word cloud to redraw with a new set of words.
+  //In reality the new words would probably come from a server request,
+  // user input or some other source.
+  function showNewWords(vis, spiral) {
 
-	layout.start();
+      vis.update(dataset, spiral)
+  }
 
-	var data_element = d3.select("#texts");
+  //Create a new instance of the word cloud visualisation.
+  var myWordCloud = wordCloud('#vis');
 
-	function first_draw(words) {
-  		svg.append("g")
-  			.attr("id", "texts")
-      		.attr("transform", "translate(" + layout.size()[0] / 2 + "," + layout.size()[1] / 2 + ")")
-    		.selectAll("text")
-      			.data(words)
-    		.enter().append("text")
-      		.style("font-size", function(d) { return d.size + "px"; })
-      		.style("font-family", "Impact")
-      		.style("fill", function(d, i) { return fill(i); })
-      		.attr("text-anchor", "middle")
-      		.attr("transform", function(d) {
-        		return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
-      		})
-      		.text(function(d) { return d.text; });
-	}
-
-	function add_words(words) {
-		data_element.selectAll("text")
-				.data(words)
-			.enter().append("text")
-      		.style("font-size", function(d) { return d.size + "px"; })
-      		.style("font-family", "Impact")
-      		.style("fill", function(d, i) { return fill(i); })
-      		.attr("text-anchor", "middle")
-      		.attr("transform", function(d) {
-        		return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
-      		})
-      		.text(function(d) { return d.text; });
-	}
+  //Start cycling through the demo data
+  showNewWords(myWordCloud, spiral);
 
 $(document).ready(function(){
     $("input[type=radio][name=spiral]").change(function(){
-    	var new_words = {
-    		text: this.value,
-    		size: 12 + Math.random() * 90,
-    		test: "haha"
-    	};
+      spiral = this.value
+      showNewWords(myWordCloud, spiral);
+    });
+});
 
-    	dataset.push(new_words);
-    	add_words(dataset);
+$(document).ready(function(){
+    $("#b_add").click(function(){
+        new_words = $("#nwords").val();
+        var new_data = {
+        text: new_words,
+        size: 10 + Math.random() * 90
+      };
+      console.log(new_data);
+      dataset.push(new_data);
+      showNewWords(myWordCloud, spiral);
     });
 });
 </script>
