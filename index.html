@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="js/d3.layout.cloud.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<head>
+    <title>Word Cloud Example</title>
+</head>
+
+<style>
+    body {
+        font-family:"Lucida Grande","Droid Sans",Arial,Helvetica,sans-serif;
+    }
+    .legend {
+        border: 1px solid #555555;
+        border-radius: 5px 5px 5px 5px;
+        font-size: 0.8em;
+        margin: 10px;
+        padding: 8px;
+    }
+    .bld {
+        font-weight: bold;
+    }
+</style>
+<body>
+	<div id="vis"></div>
+	<div>
+		<p>
+			<label>Spiral:</label>
+			<label for="archimedean">
+				<input type="radio" name="spiral" id="archimedean" value="archimedean" checked="checked">
+				"Archimedean"
+			</label>
+			<label for="rectangular">
+				<input type="radio" name="spiral" id="rectangular" value="rectangular">
+				"Rectangular"
+			</label>
+		</p>
+	</div>
+</body>
+<script>
+	var dataset = [
+      	"Hello", "world", "normally", "you", "want", "more", "words",
+      	"than", "this", "test", "tequilla", "vindictive", "hopes",
+      	"emotions", "expressions", "affective", "computing", "appraisal"].map(function(d) {
+      	return {text: d, size: 12 + Math.random() * 90, test: "haha"};
+    });
+
+	var fill = d3.scale.category20();
+
+	var layout = d3.layout.cloud()
+    	.size([800, 500])
+    	.words(dataset)
+    	.padding(0)
+    	//.rotate(function() { return ~~(Math.random() * 2) * 45; })
+    	.font("Impact")
+    	.fontSize(function(d) { return d.size; })
+    	.spiral("archimedean")
+    	.on("end", first_draw);
+
+    var svg = d3.select("#vis").append("svg")
+				.attr("id","cloud")
+      			.attr("width", layout.size()[0])
+      			.attr("height", layout.size()[1]);
+
+	layout.start();
+
+	var data_element = d3.select("#texts");
+
+	function first_draw(words) {
+  		svg.append("g")
+  			.attr("id", "texts")
+      		.attr("transform", "translate(" + layout.size()[0] / 2 + "," + layout.size()[1] / 2 + ")")
+    		.selectAll("text")
+      			.data(words)
+    		.enter().append("text")
+      		.style("font-size", function(d) { return d.size + "px"; })
+      		.style("font-family", "Impact")
+      		.style("fill", function(d, i) { return fill(i); })
+      		.attr("text-anchor", "middle")
+      		.attr("transform", function(d) {
+        		return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+      		})
+      		.text(function(d) { return d.text; });
+	}
+
+	function add_words(words) {
+		data_element.selectAll("text")
+				.data(words)
+			.enter().append("text")
+      		.style("font-size", function(d) { return d.size + "px"; })
+      		.style("font-family", "Impact")
+      		.style("fill", function(d, i) { return fill(i); })
+      		.attr("text-anchor", "middle")
+      		.attr("transform", function(d) {
+        		return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+      		})
+      		.text(function(d) { return d.text; });
+	}
+
+$(document).ready(function(){
+    $("input[type=radio][name=spiral]").change(function(){
+    	var new_words = {
+    		text: this.value,
+    		size: 12 + Math.random() * 90,
+    		test: "haha"
+    	};
+
+    	dataset.push(new_words);
+    	add_words(dataset);
+    });
+});
+</script>
+</html>
