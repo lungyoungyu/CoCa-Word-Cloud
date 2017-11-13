@@ -36,6 +36,11 @@
   <input id="nwords" type="text" name="new_words">
   <input id="b_add" type="button" value="Add words">
   <br>
+  <input id="name" type="text" name="name_search">
+  <input id="b_name" type="button" value="search">
+  <br>
+  <input id="all_name" type="button" value="show all name">
+  <br>
   <div>
     <p>
       <label>Spiral:</label>
@@ -50,128 +55,77 @@
     </p>
   </div>
 </body>
+<script src='js/dynamic_word_cloud.js'></script>
 <script>
-//source: http://bl.ocks.org/lorenzopub/820bec1dafa6a5cd11aa23c1268edcbf
-  function wordCloud(selector) {
-
-      var fill = d3.scale.category20();
-
-      //Construct the word cloud's SVG element
-      var svg = d3.select(selector).append("svg")
-          .attr("width", 1000)
-          .attr("height", 600)
-          .append("g")
-          .attr("transform", "translate(500,300)");
-
-
-      //Draw the word cloud
-      function draw(words) {
-          var cloud = svg.selectAll("g text")
-                          .data(words, function(d) { return d.text; })
-
-          //Entering words
-          cloud.enter()
-              .append("text")
-              .style("font-family", "Impact")
-              .style("fill", function(d, i) { return fill(i); })
-              .attr("text-anchor", "middle")
-              .attr('font-size', 1)
-              .text(function(d) { return d.text; });
-
-          //Entering and existing words
-          cloud
-              .transition()
-                  .duration(600)
-                  .style("font-size", function(d) { return d.size + "px"; })
-                  .attr("transform", function(d) {
-                      return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
-                  })
-                  .style("fill-opacity", 1);
-
-          //Exiting words
-          cloud.exit()
-              .transition()
-                  .duration(200)
-                  .style('fill-opacity', 1e-6)
-                  .attr('font-size', 1)
-                  .remove();
-      }
-
-
-      //Use the module pattern to encapsulate the visualisation code. We'll
-      // expose only the parts that need to be public.
-      return {
-
-          //Recompute the word cloud for a new set of words. This method will
-          // asycnhronously call draw when the layout has been computed.
-          //The outside world will need to call this function, so make it part
-          // of the wordCloud return value.
-          update: function(words, spiral) {
-              d3.layout.cloud().size([1000, 600])
-                  .words(words)
-                  .padding(10)
-                  //.rotate(function() { return ~~(Math.random() * 2) * 90; })
-                  .font("Impact")
-                  .fontSize(function(d) { return d.size; })
-                  .spiral(spiral)
-                  .on("end", draw)
-                  .start();
-          }
-      }
-
-  }
-
-  var dataset = [
-        "Hello", "world", "normally", "you", "want", "more", "words",
-        "than", "this", "test", "tequilla", "vindictive", "hopes",
-        "emotions", "expressions", "affective", "computing", "appraisal"].map(function(d) {
-        return {text: d, size: 10 + Math.random() * 90};
-    });
-
-     var spiral = "archimedean";
-
-  //Prepare one of the sample sentences by removing punctuation,
-  // creating an array of words and computing a random size attribute.
-  function getWords(i) {
-      return words[i]
-              .replace(/[!\.,:;\?]/g, '')
-              .split(' ')
-              .map(function(d) {
-                  return {text: d, size: 10 + Math.random() * 60};
-              })
-  }
-
-  //This method tells the word cloud to redraw with a new set of words.
-  //In reality the new words would probably come from a server request,
-  // user input or some other source.
-  function showNewWords(vis, spiral) {
-
-      vis.update(dataset, spiral)
-  }
-
-  //Create a new instance of the word cloud visualisation.
-  var myWordCloud = wordCloud('#vis');
-
-  //Start cycling through the demo data
-  showNewWords(myWordCloud, spiral);
-
 $(document).ready(function(){
+  // Change the spiral(structure) of the word cloud
     $("input[type=radio][name=spiral]").change(function(){
       spiral = this.value
-      showNewWords(myWordCloud, spiral);
+      total_thread += 1;
+      showNewWords(dataset, myWordCloud, spiral, true);
     });
 });
 
 $(document).ready(function(){
+  // Add new words to the word cloud
     $("#b_add").click(function(){
         new_words = $("#nwords").val();
-        var new_data = {
-        text: new_words,
-        size: 10 + Math.random() * 90
-      };
+        new_data = getWords(new_words);
       console.log(new_data);
-      dataset.push(new_data);
-      showNewWords(myWordCloud, spiral);
+
+      if (current_data == 'CoCa') {
+        coca_dataset = coca_dataset.concat(new_data);
+        dataset = coca_dataset;
+      } else {
+        person_dataset = person_map.get(current_data);
+        person_dataset = person_dataset.concat(new_data);
+        person_map.set(current_data, person_dataset);
+        dataset = person_map.get(current_data);
+      }
+
+      console.log(dataset);
+      total_thread += 1;
+      showNewWords(dataset, myWordCloud, spiral, true);
+    });
+});
+
+$(document).ready(function(){
+  // Search with a full name to generate a word cloud of the person's response.
+    $("#b_name").click(function(){
+        name = $("#name").val();
+        name = name.replace(' ', '-').toLowerCase();
+        console.log(name);
+        if (name == 'coca' || !person_map.has(name)) {
+          get_responses(update_dataset);
+          dataset = coca_dataset;
+          current_data = 'CoCa';
+        } else {
+          dataset = person_map.get(name);
+          current_data = name;
+        }
+        
+      total_thread += 1;
+      showNewWords(dataset, myWordCloud, spiral, true);
+    });
+});
+
+$(document).ready(function(){
+  // Show all the names of responders.
+  // Not complete
+    $("#all_name").click(function(){
+        console.log(name);
+        get_responses(update_dataset);
+        current_data = 'all_name';
+        all_names = new Array();
+        for (var key of person_map.keys()) {
+          all_names.push(key);
+        }
+        dataset = all_names.map(function(d) {
+                return {text: d, size: 18 + Math.random() * 60};
+            });
+        console.log(dataset);
+      total_thread += 1;
+      showNewWords(dataset, myWordCloud, spiral, true);
     });
 });
 </script>
