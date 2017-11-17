@@ -80,7 +80,7 @@ var current_data = "CoCa";
 
 function get_responses(callback) {
     var api_key = "e291591d92b386bf924906768d88859e0a80e358";
-    var UID = "FhKWYE";
+    var UID = "BvNrRV";
     var URL = "https://api.typeform.com/v1/form/" + UID + "?key=" + api_key + "&completed=true";
 
     var xmlHttp = new XMLHttpRequest();
@@ -108,59 +108,37 @@ function store_responses(json_response) {
         var a_response = '';
         var name = '';
         answers = response.responses[i].answers;
+        var new_response = true;
         for(j in question_ids) {
         	if (j == 0) {
         		name = answers[question_ids[j]];
         	} else if (j == 1) {
         		name += "-" + answers[question_ids[j]];
-        		a_response += name;
-        	} else {
-        		//var answer = answers[question_ids[j]].replace(/[!\,:;\?]/g, '');
-        		var answer = answers[question_ids[j]].replace(/\s/g, '-');
-                if (j == 3 && answer == "United-States-of-America") {
-                    answer = "U.S."
-                }
-        		a_response += " " + answer;
-        	}
-        }
-        console.log(name);
-        console.log(a_response);
-        person_map.set(name.toLowerCase(), getWords(a_response));
-    }
-}
-
-function update_dataset(json_response) {
-    var response = JSON.parse(json_response);
-    for(i in response.questions) {
-        question_ids.push(response.questions[i].id);
-    }
-
-    for(i in response.responses) {
-        var a_response = '';
-        var name = '';
-        answers = response.responses[i].answers;
-        var new_response = true;
-        for(j in question_ids) {
-            if (j == 0) {
-                name = answers[question_ids[j]];
-            } else if (j == 1) {
-                name += "-" + answers[question_ids[j]];
                 if (person_map.has(name.toLowerCase())) {
                     new_response = false;
                     break;
                 }
-                a_response += name;
+        		//a_response += name;
+        	} else if (j == 10) {
+                var answer = answers[question_ids[j]].replace(/[!\,:;\?]/g, '');
+                a_response += answer + " ";
             } else {
-                //var answer = answers[question_ids[j]].replace(/[!\,:;\?]/g, '');
-                var answer = answers[question_ids[j]].replace(/\s/g, '-');
-                if (j == 3 && answer == "United-States-of-America") {
+        		answer = answers[question_ids[j]].replace(/\s/g, '-');
+                if (j == 10 && answer == "United-States-of-America") {
                     answer = "U.S."
                 }
-                a_response += " " + answer;
-            }
+        		a_response += answer + " ";
+        	}
         }
         if (new_response) {
-            person_map.set(name.toLowerCase(), a_response);
+            var new_data = new Array();
+            // set name to the biggest font
+            new_data[0] = {text: name, size: 60};
+
+            a_response = a_response.substr(0, a_response.length - 1);
+            new_data = new_data.concat(getWords(a_response));
+        
+            person_map.set(name.toLowerCase(), new_data);
         }
     }
     console.log(person_map);
