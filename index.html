@@ -4,12 +4,30 @@
 <script src="js/d3.layout.cloud.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <head>
-    <title>Word Cloud Example</title>
+    <title>Word Cloud</title>
+    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Tangerine">
+
+    <link rel="stylesheet" href="css/main.css">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 </head>
 
 <style>
     body {
         font-family:"Lucida Grande","Droid Sans",Arial,Helvetica,sans-serif;
+    }
+    .fancyfont {
+    	font-family: 'Tangerine', serif;
+    	font-size: 48px;
+    }
+    .menufont {
+    	font-family: 'Roboto', sans-serif;
+    }
+    .citefont {
+
     }
     .legend {
         border: 1px solid #555555;
@@ -21,39 +39,40 @@
     .bld {
         font-weight: bold;
     }
-
     .center {
       margin: auto;
-  }
-
-  svg {
+  	}
+  	hr {
+	  clear:both;
+  	  display:block;
+  	  width: 96%;               
+      background-color:#000000;
+      height: 1px;
+	}
+  	svg {
       display: block;
       margin: 0 auto;
-  }
+  	}
 </style>
 <body>
-  <div id="vis" class="center"></div>
-  <input id="nwords" type="text" name="new_words">
-  <input id="b_add" type="button" value="Add words">
-  <br>
-  <input id="name" type="text" name="name_search">
-  <input id="b_name" type="button" value="search">
-  <br>
-  <input id="all_name" type="button" value="show all name">
-  <br>
-  <div>
-    <p>
-      <label>Spiral:</label>
-      <label for="archimedean">
-        <input type="radio" name="spiral" id="archimedean" value="archimedean" checked="checked">
-        "Archimedean"
-      </label>
-      <label for="rectangular">
-        <input type="radio" name="spiral" id="rectangular" value="rectangular">
-        "Rectangular"
-      </label>
-    </p>
+  <div class="fancyfont">Welcome to your personal word cloud!</div>
+  <center>
+  <div class="menufont">
+  	<div id="vis" class="center"></div>
+  	<hr>
+	  	  <div class="fancyfont">Explore your word cloud!</div>
+		  <b>Add Words:</b> <input id="nwords" type="text" name="new_words">
+		  <input id="b_add" type="button" value="Add!">
+		  <br> <br>
+		  <b>Search for Words:</b> <input id="name" type="text" name="name_search">
+		  <input id="b_name" type="button" value="Go!">
+		  <br> <br>
+		  <b>View All Names:</b> <input id="all_name" type="button" value="Show All!">
+		  <br> <br>
   </div>
+  <img src="http://viterbivoices.usc.edu/wp-content/uploads/2015/09/CoCa-cover.jpg" alt="CoCa Logo" width="225" height="75">
+  <div class="fancyfont"><font size="6">Created by Team Diplodocus: Chanuwas Aswamenakul, Lung-Young (Eric) Yu, Konrad Cheng</font></div>
+  <center>
 </body>
 <script src='js/dynamic_word_cloud.js'></script>
 <script>

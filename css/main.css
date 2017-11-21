@@ -1,0 +1,179 @@
+
+.container {
+    font-family:  "Helvetica";
+    color: #4b4b4b;
+}
+
+.courseSelectionWindow{
+
+}
+
+
+.course p {
+    position: relative;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    -webkit-transform: translateY(-50%);
+    transform: translateY(-50%);
+    cursor: pointer;
+
+}
+.course {
+    background: wheat;
+    text-align: center;
+    border-radius: 15px;
+    height: 50px;
+    vertical-align: middle;
+    margin: 15px 15px 15px 15px;
+    border:  2px solid transparent;
+}
+
+.course:hover {
+    -webkit-animation: glow 0.5s ease-in-out infinite alternate;
+    -moz-animation: glow 0.5s ease-in-out infinite alternate;
+    animation: glow 0.5s ease-in-out infinite alternate;
+}
+
+.selectionMessage {
+    text-align: left;
+    font-size: 30px;
+    font-weight: 200;
+}
+
+
+@keyframes glow {
+    0%   {border-color: transparent;}
+    50%  {border-color: rgba(25, 22, 25, 0.5);}
+    100% {border-color: transparent;}
+}
+
+
+
+
+/*SECTION 2*/
+
+.queueSlotRow {
+    overflow-x: scroll;getName
+}
+
+
+.queueWindow .selectionMessage{
+    text-align: center;
+}
+
+.helperQueue{
+    height: 70vh;
+    background-color: #868e96;
+    margin: 0 0.1em 0 0.1em;
+
+}
+
+.helperCard{
+    font-size: 24px;
+    font-weight:300;
+    border-bottom: 1px dashed dimgrey;
+    text-align: center;
+    color: white;
+}
+
+.inQueueCard{
+    padding: 5%;
+}
+.inQueueCard .time{
+    text-align: right;
+}
+
+.helperQueue > .inQueueCard:nth-of-type(2){
+    background-color: #31ce54;
+}
+
+.inQueueCard{
+    background-color: #dcdce2;
+}
+
+.active > .time{
+    display: block;
+}
+
+.active> .close-icon{
+    display: block;
+}
+
+
+.time{
+    display: none;
+}
+
+
+.close-icon {
+    cursor: pointer;
+    position: absolute;
+    right: 20px;
+    top: 10px;
+    font-size: 30px;
+
+}
+
+
+/*
+     Make bootstrap-select work with bootstrap 4 see:
+     https://github.com/silviomoreto/bootstrap-select/issues/1135
+     */
+
+.dropdown-toggle.btn-default {
+    color: #1d222c;
+
+    background-color: #fff;
+    border-color: #ccc;
+}
+.bootstrap-select.show > .dropdown-menu > .dropdown-menu {
+    display: block;
+}
+.bootstrap-select > .dropdown-menu > .dropdown-menu li.hidden {
+    display: none;
+}
+.bootstrap-select > .dropdown-menu > .dropdown-menu li a {
+    display: block;
+    width: 100%;
+    padding: 3px 1.5rem;
+    clear: both;
+    font-weight: 400;
+    color: #292b2c;
+    text-align: inherit;
+    white-space: nowrap;
+    background: 0 0;
+    border: 0;
+    text-decoration: none;
+}
+.bootstrap-select > .dropdown-menu > .dropdown-menu li a:hover {
+    background-color: #f4f4f4;
+}
+.bootstrap-select > .dropdown-toggle {
+    width: 100%;
+}
+.dropdown-menu > li.active > a {
+    color: #fff !important;
+    background-color: #337ab7 !important;
+}
+.bootstrap-select .check-mark {
+    line-height: 14px;
+}
+.bootstrap-select .check-mark::after {
+    font-family: "FontAwesome";
+    content: "\f00c";
+}
+.bootstrap-select button {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Make filled out selects be the same size as empty selects */
+.bootstrap-select.btn-group .dropdown-toggle .filter-option {
+    display: inline !important;
+}
+
+
+a{
+    cursor: pointer;
+}
+
