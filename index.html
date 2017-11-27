@@ -13,18 +13,39 @@
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
 
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+
+    <link rel="shortcut icon" href="photos/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="photos/favicon.ico" type="image/x-icon">
 </head>
 
 <style>
     body {
         font-family:"Lucida Grande","Droid Sans",Arial,Helvetica,sans-serif;
+        background-color: #e4dbbf;
     }
     .fancyfont {
     	font-family: 'Tangerine', serif;
     	font-size: 48px;
+      font-weight: bold;
     }
+
+    .navbar {
+      display: flex;
+      justify-content: center;
+      margin-top: 25px;
+      margin-bottom: 35px;
+      height: 75px;
+      width: 1200px;
+      border: 5px solid black;
+    }
+
+    .bkgrd-color {
+      background-color: #7FDBFF;
+    }
+
     .menufont {
     	font-family: 'Roboto', sans-serif;
+      color: #70AB8F
     }
     .citefont {
 
@@ -41,11 +62,23 @@
     }
     .center {
       margin: auto;
+      display: flex;
+      justify-content: center;
   	}
+
+    .menu {
+      display: flex;
+    }
+
+    .example {
+      margin-top: 25px;
+      margin-bottom: 25px;
+    }
+
   	hr {
-	  clear:both;
+	    clear:both;
   	  display:block;
-  	  width: 96%;               
+  	  width: 96%;
       background-color:#000000;
       height: 1px;
 	}
@@ -54,25 +87,43 @@
       margin: 0 auto;
   	}
 </style>
+
 <body>
-  <div class="fancyfont">Welcome to your personal word cloud!</div>
-  <center>
-  <div class="menufont">
-  	<div id="vis" class="center"></div>
-  	<hr>
-	  	  <div class="fancyfont">Explore your word cloud!</div>
-		  <b>Add Words:</b> <input id="nwords" type="text" name="new_words">
-		  <input class="btn btn-default" id="b_add" type="button" value="Add!">
-		  <br> <br>
-		  <b>Search for Words:</b> <input id="name" type="text" name="name_search">
-		  <input class ="btn btn-default" id="b_name" type="button" value="Go!">
-		  <br> <br>
-		  <b>View All Names:</b> <input class="btn btn-default" id="all_name" type="button" value="Show All!">
-		  <br> <br>
+  <div class="center bkgrd-color">
+    <nav class="navbar navbar-light bg-light">
+      <div class="navbar-brand fancyfont">Welcome To Your Personal Word Cloud!</div>
+    </nav>
   </div>
-  <img src="http://viterbivoices.usc.edu/wp-content/uploads/2015/09/CoCa-cover.jpg" alt="CoCa Logo" width="225" height="75">
-  <div class="fancyfont"><font size="6">Created by Team Diplodocus: Chanuwas Aswamenakul, Lung-Young (Eric) Yu, Konrad Cheng</font></div>
   <center>
+  <div id="vis" class="center"></div>
+  <hr>
+  <div class="menu">
+    <div class="col-lg-3 col-md-3 col-sm-3">
+      <img class="example" src="photos/wordcloudex1.png" width="200" height="200">
+      <img class="example" src="photos/wordcloudex2.gif" width="300" height="200">
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-6">
+      <div class="fancyfont">Explore your word cloud!</div>
+      <div class="menufont">
+         <b>Add Words:</b> <input id="nwords" type="text" name="new_words">
+         <input class="btn btn-default" id="b_add" type="button" value="Add!">
+         <br> <br>
+         <b>Search for Words:</b> <input id="name" type="text" name="name_search">
+         <input class ="btn btn-default" id="b_name" type="button" value="Go!">
+         <br> <br>
+         <b>View All Names:</b> <input class="btn btn-default" id="all_name" type="button" value="Show All!">
+         <br> <br>
+      </div>
+      <div class="fancyfont"><font size="6">Created by Team Diplodocus: Chanuwas Aswamenakul, Lung-Young (Eric) Yu, Konrad Cheng</font></div>
+      <img class="example" src="photos/Coca-Logo.png" alt="CoCa Logo" width="450" height="150">
+      <center>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-3">
+      <img class="example" src="photos/wordcloudex3.png" width="200" height="200">
+      <img class="example" src="photos/wordcloudex4.png" width="300" height="200">
+    </div>
+  </div>
+
 </body>
 <script src='js/dynamic_word_cloud.js'></script>
 <script>
@@ -122,7 +173,7 @@ $(document).ready(function(){
           dataset = person_map.get(name);
           current_data = name;
         }
-        
+
       total_thread += 1;
       showNewWords(dataset, myWordCloud, spiral, true);
     });
