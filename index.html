@@ -165,12 +165,17 @@ $(document).ready(function(){
         name = $("#name").val();
         name = name.replace(' ', '-').toLowerCase();
         console.log(name);
-        if (name == 'coca' || !person_map.has(name)) {
+        if (name == 'coca') {
+          dataset = coca_dataset;
+          current_data = "CoCa";
+          total_thread += 1;
+          showNewWords(dataset, myWordCloud, spiral, true);
+        } else if (!person_map.has(name)) {
           get_responses(store_responses);
 
           var progress = $("#load_bar").attr("data-value");
           var bar = document.getElementById('load_bar').ldBar;
-          var load = setInterval(loading, 50);
+          var load = setInterval(loading, 45);
 
           function loading() {
             if (progress >= 100) {
@@ -190,7 +195,7 @@ $(document).ready(function(){
             } else {
               alert("This name does not exist.");
             }
-          }, 6000);
+          }, 5000);
       } else {
           dataset = person_map.get(name);
           current_data = name;
@@ -209,7 +214,7 @@ $(document).ready(function(){
           all_names.push(key);
         }
         dataset = all_names.map(function(d) {
-                return {text: d, size: 18 + Math.random() * 60};
+                return {text: d, size: 18 + Math.random() * 50};
             });
         console.log(dataset);
       total_thread += 1;
