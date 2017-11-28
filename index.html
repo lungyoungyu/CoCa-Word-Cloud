@@ -23,7 +23,7 @@
 <style>
     body {
         font-family:"Lucida Grande","Droid Sans",Arial,Helvetica,sans-serif;
-        /*background-color: #e4dbbf;*/
+        background-color: #00FFF7;
     }
     .fancyfont {
     	font-family: 'Tangerine', serif;
@@ -42,7 +42,7 @@
     }
 
     .bkgrd-color {
-      background-color: #7FDBFF;
+      background-color: #8EDA00;
     }
 
     .menufont {
@@ -102,14 +102,14 @@
       <img class="example" src="photos/wordcloudex2.gif" width="300" height="200">
     </div>
     <div class="col-lg-6 col-md-6 col-sm-6">
-      <div class="fancyfont">Explore your word cloud!</div>
+      <div class="fancyfont">Explore Your Word Cloud!</div>
       <div class="menufont">
         <b>Add Words:</b> <input id="nwords" type="text" name="new_words">
         <input class="btn btn-default" id="b_add" type="button" value="Add!">
         <br> <br>
-        <b>Search for your name:</b> <input id="name" type="text" name="name_search">
+        <b>Search For Your Name:</b> <input id="name" type="text" name="name_search">
         <input class ="btn btn-default" id="b_name" type="button" value="Go!">
-        <br> 
+        <br>
         <div class="ldBar" id="load_bar" style="width:100%;height:60px",
               data-value="0",
               data-stroke="data:ldbar/res,gradient(0,1,#9df,#9fd,#df9,#fd9)",
@@ -190,7 +190,7 @@ $(document).ready(function(){
             } else {
               alert("This name does not exist.");
             }
-          }, 6000);        
+          }, 6000);
       } else {
           dataset = person_map.get(name);
           current_data = name;
