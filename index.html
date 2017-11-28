@@ -3,8 +3,10 @@
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script src="js/d3.layout.cloud.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script type="text/javascript" src="js/loading-bar.min.js"></script>
 <head>
     <title>Word Cloud</title>
+    <link rel="stylesheet" type="text/css" href="css/loading-bar.css"/>
     <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Tangerine">
 
     <link rel="stylesheet" href="css/main.css">
@@ -21,7 +23,7 @@
 <style>
     body {
         font-family:"Lucida Grande","Droid Sans",Arial,Helvetica,sans-serif;
-        background-color: #e4dbbf;
+        /*background-color: #e4dbbf;*/
     }
     .fancyfont {
     	font-family: 'Tangerine', serif;
@@ -46,9 +48,6 @@
     .menufont {
     	font-family: 'Roboto', sans-serif;
       color: #70AB8F
-    }
-    .citefont {
-
     }
     .legend {
         border: 1px solid #555555;
@@ -105,14 +104,19 @@
     <div class="col-lg-6 col-md-6 col-sm-6">
       <div class="fancyfont">Explore your word cloud!</div>
       <div class="menufont">
-         <b>Add Words:</b> <input id="nwords" type="text" name="new_words">
-         <input class="btn btn-default" id="b_add" type="button" value="Add!">
-         <br> <br>
-         <b>Search for Words:</b> <input id="name" type="text" name="name_search">
-         <input class ="btn btn-default" id="b_name" type="button" value="Go!">
-         <br> <br>
-         <b>View All Names:</b> <input class="btn btn-default" id="all_name" type="button" value="Show All!">
-         <br> <br>
+        <b>Add Words:</b> <input id="nwords" type="text" name="new_words">
+        <input class="btn btn-default" id="b_add" type="button" value="Add!">
+        <br> <br>
+        <b>Search for your name:</b> <input id="name" type="text" name="name_search">
+        <input class ="btn btn-default" id="b_name" type="button" value="Go!">
+        <br> 
+        <div class="ldBar" id="load_bar" style="width:100%;height:60px",
+              data-value="0",
+              data-stroke="data:ldbar/res,gradient(0,1,#9df,#9fd,#df9,#fd9)",
+              data-path="M10 20Q20 15 30 20Q40 25 50 20Q60 15 70 20Q80 25 90 20"></div>
+        <br>
+        <b>View All Names:</b> <input class="btn btn-default" id="all_name" type="button" value="Show All!">
+        <br> <br>
       </div>
       <div class="fancyfont"><font size="6">Created by Team Diplodocus: Chanuwas Aswamenakul, Lung-Young (Eric) Yu, Konrad Cheng</font></div>
       <img class="example" src="photos/Coca-Logo.png" alt="CoCa Logo" width="450" height="150">
@@ -134,10 +138,8 @@ $(document).ready(function(){
       total_thread += 1;
       showNewWords(dataset, myWordCloud, spiral, true);
     });
-});
 
-$(document).ready(function(){
-  // Add new words to the word cloud
+    // Add new words to the word cloud
     $("#b_add").click(function(){
         new_words = $("#nwords").val();
         new_data = getWords(new_words);
@@ -157,34 +159,50 @@ $(document).ready(function(){
       total_thread += 1;
       showNewWords(dataset, myWordCloud, spiral, true);
     });
-});
 
-$(document).ready(function(){
-  // Search with a full name to generate a word cloud of the person's response.
+    // Search with a full name to generate a word cloud of the person's response.
     $("#b_name").click(function(){
         name = $("#name").val();
         name = name.replace(' ', '-').toLowerCase();
         console.log(name);
         if (name == 'coca' || !person_map.has(name)) {
-          get_responses(update_dataset);
-          dataset = coca_dataset;
-          current_data = 'CoCa';
-        } else {
+          get_responses(store_responses);
+
+          var progress = $("#load_bar").attr("data-value");
+          var bar = document.getElementById('load_bar').ldBar;
+          var load = setInterval(loading, 50);
+
+          function loading() {
+            if (progress >= 100) {
+              clearInterval(load);
+            } else {
+              progress++;
+            }
+            bar.set(progress);
+          }
+
+          setTimeout(function() {
+            if (person_map.has(name)) {
+              dataset = person_map.get(name);
+              current_data = name;
+              total_thread += 1;
+              showNewWords(dataset, myWordCloud, spiral, true);
+            } else {
+              alert("This name does not exist.");
+            }
+          }, 6000);        
+      } else {
           dataset = person_map.get(name);
           current_data = name;
+          total_thread += 1;
+        showNewWords(dataset, myWordCloud, spiral, true);
         }
-
-      total_thread += 1;
-      showNewWords(dataset, myWordCloud, spiral, true);
     });
-});
 
-$(document).ready(function(){
-  // Show all the names of responders.
-  // Not complete
+    // Show all the names of responders.
     $("#all_name").click(function(){
         console.log(name);
-        get_responses(update_dataset);
+        get_responses(store_responses);
         current_data = 'all_name';
         all_names = new Array();
         for (var key of person_map.keys()) {

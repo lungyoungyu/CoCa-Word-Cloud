@@ -67,7 +67,7 @@ function wordCloud(selector) {
 
 var coca_dataset = [
       	"engineering", "architect", "groups", "we", "designs", "games", "technology",
-      	"collaborative", "creativity", "test", "ideas", "Corpus-Callosum", "fun",
+      	"collaborative", "creativity", "awesome", "ideas", "Corpus-Callosum", "fun",
       	"organization", "expressions", "cool", "colorful", "artistic"].map(function(d) {
       	return {text: d, size: 18 + Math.random() * 60};
     });
@@ -124,16 +124,13 @@ function store_responses(json_response) {
                 a_response += answer + " ";
             } else {
         		answer = answers[question_ids[j]].replace(/\s/g, '-');
-                if (j == 10 && answer == "United-States-of-America") {
-                    answer = "U.S."
-                }
         		a_response += answer + " ";
         	}
         }
         if (new_response) {
             var new_data = new Array();
             // set name to the biggest font
-            new_data[0] = {text: name, size: 60};
+            new_data[0] = {text: name, size: 65};
 
             a_response = a_response.substr(0, a_response.length - 1);
             new_data = new_data.concat(getWords(a_response));
@@ -153,7 +150,13 @@ function getWords(words) {
             .replace(/[!\,:;\?]/g, '')
             .split(' ')
             .map(function(d) {
-                return {text: d, size: 18 + Math.random() * 60};
+            	if (d.length > 20) {
+            		return {text: d, size: 18 + Math.random() * 30};
+            	} else if (d.length > 12) {
+            		return {text: d, size: 18 + Math.random() * 44};
+            	} else {
+            		return {text: d, size: 18 + Math.random() * 50};
+            	}
             })
 }
 
