@@ -74,6 +74,7 @@ var coca_dataset = [
 
 var dataset = coca_dataset;
 
+var initialization = true;
 var question_ids = new Array();
 var person_map = new Map();
 var current_data = "CoCa";
@@ -97,11 +98,13 @@ function get_responses(callback) {
 
 function store_responses(json_response) {
     var response = JSON.parse(json_response);
-    console.log(response);
+    //console.log(response);
     console.log(response.questions);
-    console.log(response.responses);
-    for(i in response.questions) {
-        question_ids.push(response.questions[i].id);
+    //console.log(response.responses);
+    if (initialization) {
+        for(i in response.questions) {
+            question_ids.push(response.questions[i].id);
+        }
     }
 
     for(i in response.responses) {
@@ -111,9 +114,9 @@ function store_responses(json_response) {
         var new_response = true;
         for(j in question_ids) {
         	if (j == 0) {
-        		name = answers[question_ids[j]];
+        		name = answers[question_ids[j]].trim();
         	} else if (j == 1) {
-        		name += "-" + answers[question_ids[j]];
+        		name += "-" + answers[question_ids[j]].trim();
                 if (person_map.has(name.toLowerCase())) {
                     new_response = false;
                     break;
